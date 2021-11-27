@@ -1,2 +1,2 @@
 # Cimulate
-A C/C++ library to simulate key, mouse, and joystick actions. (Comes with Python lib as well)
+A C++ library to simulate key, mouse, and joystick actions. (Will come with Python lib as well)
