@@ -15,8 +15,8 @@ Linux:
   - Joystick: Not implemented
 
 Windows:
-  - Mouse: Not implemented
-  - Keyboard: Not implemented
+  - Mouse: In developement (needs testing to move to "Working")
+  - Keyboard: In developement
   - Joystick: Not implemented
 
 X OSes:
