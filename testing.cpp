@@ -1,4 +1,4 @@
-#include "Cimulate.h"
+#include "Cimulate.hpp"
 
 int main(){
     Cimulate sim = Cimulate();
