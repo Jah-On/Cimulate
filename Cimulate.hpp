@@ -5,10 +5,10 @@
 #include <Windows.h>
 
 class Keyboard{
-protected:
+private:
    INPUT _input;
 public:
-   int _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P, _Q, _R, _S, _T, _U, _V, _W, _X, _Y, _Z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _F1, _F2, _F3, _F4, _F5, _F6, _F7, _F8, _F9, _F10, _F11, _F12, _F13, _F14, _F15, _F16, _F17, _F18, _F19, _F20, _F21, _F22, _F23, _F24, _TILDE, _HYPHEN, _EQUAL, _OPEN_BRACKET, _CLOSE_BRACKET, _BACKSLASH, _SEMI_COLON, _APOSTROPHE, _COMMA, _PERIOD, _FOWARDSLASH, _UP, _DOWN, _LEFT, _RIGHT, _INSERT, _DELETE, _HOME, _END, _PAGE_UP, _PAGE_DOWN, _PRINT_SCREEN, _SCROLL_LOCK, _BREAK, _ESCAPE, _CAPS_LOCK, _SPACE, _NUM_LOCK, _NUM_DIVIDE, _NUM_MULTIPLY, _NUM_SUBTRACT, _NUM_ADD, _NUM_ENTER, _NUM_DECIMAL, _NUM_0, _NUM_1, _NUM_2, _NUM_3, _NUM_4, _NUM_5, _NUM_6, _NUM_7, _NUM_8, _NUM_9;
+   int[2] _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P, _Q, _R, _S, _T, _U, _V, _W, _X, _Y, _Z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _F1, _F2, _F3, _F4, _F5, _F6, _F7, _F8, _F9, _F10, _F11, _F12, _F13, _F14, _F15, _F16, _F17, _F18, _F19, _F20, _F21, _F22, _F23, _F24, _TILDE, _HYPHEN, _EQUAL, _OPEN_BRACKET, _CLOSE_BRACKET, _BACKSLASH, _SEMI_COLON, _APOSTROPHE, _COMMA, _PERIOD, _FOWARDSLASH, _UP, _DOWN, _LEFT, _RIGHT, _INSERT, _DELETE, _HOME, _END, _PAGE_UP, _PAGE_DOWN, _PRINT_SCREEN, _SCROLL_LOCK, _BREAK, _ESCAPE, _CAPS_LOCK, _SPACE, _NUM_LOCK, _NUM_DIVIDE, _NUM_MULTIPLY, _NUM_SUBTRACT, _NUM_ADD, _NUM_ENTER, _NUM_DECIMAL, _NUM_0, _NUM_1, _NUM_2, _NUM_3, _NUM_4, _NUM_5, _NUM_6, _NUM_7, _NUM_8, _NUM_9;
    std::string lang;
 
    Keyboard(){
@@ -137,17 +137,15 @@ public:
 };
 
 class Mouse{
-protected:
+private:
    INPUT _input;
 public:
    int _LEFT[2] = {MOUSEEVENTF_LEFTUP, MOUSEEVENTF_LEFTDOWN};
    int _MIDDLE[2] = {MOUSEEVENTF_MIDDLEUP, MOUSEEVENTF_MIDDLEDOWN};
    int _RIGHT[2] = {MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_RIGHTDOWN};
-   int _SCROLL_UP = MOUSEEVENTF_WHEEL;
-   int _SCROLL_DOWN = MOUSEEVENTF_WHEEL;
-   int _SCROLL_LEFT = MOUSEEVENTF_HWHEEL;
-   int _SCROLL_RIGHT = MOUSEEVENTF_HWHEEL;
-   int _MISC_A = {MOUSEEVENTF_XUP, MOUSEEVENTF_XDOWN};
+   int _SCROLL_VERTICAL = 0x0800;
+   int _SCROLL_HORIZONTAL = 0x1000;
+   int _MISC_A[2] = {MOUSEEVENTF_XUP, MOUSEEVENTF_XDOWN};
 
    mouse(){
    }
@@ -163,7 +161,7 @@ public:
       SendInput(1, &_input, sizeof(_input));
    }
 
-   void toggle(int[2] button, bool down){
+   void toggle(int *button, bool down){
       _input.type = INPUT_MOUSE;
       _input.mi.dwFlags = button[down];
       SendInput(1, &_input, sizeof(_input));
@@ -171,16 +169,11 @@ public:
 };
 
 class Cimulate{
-private:
-   Display *d;
 public:
    Mouse mouse;
    Keyboard keyboard;
 
    Cimulate(){
-      d = XOpenDisplay(0);
-      mouse.setDisplay(d);
-      keyboard.setDisplay(d);
       keyboard.setMap("US");
    }
 
