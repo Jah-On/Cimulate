@@ -18,8 +18,10 @@ public:
       lang = language;
       if (language == "US"){
          // https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
-         _A = {0x41, MapVirtualKey(0x41, MAPVK_VK_TO_VSC)};
-         _0 = {0x30, MapVirtualKey(0x30, MAPVK_VK_TO_VSC)};
+         _A[0] = 0x41;
+         _A[1] = MapVirtualKey(0x41, MAPVK_VK_TO_VSC)};
+         _0[0] = 0x00;
+         _0[1] = MapVirtualKey(0x00, MAPVK_VK_TO_VSC)};
          // _B = ;
          // _C = ;
          // _D = ;
@@ -126,7 +128,7 @@ public:
       }
    }
 
-   void toggle(int key, int down){
+   void toggle(int *key, int down){
       _input.type = INPUT_KEYBOARD;
       _input.ki.wVk = key;
       _input.ki.dwFlags = 0;
