@@ -1,5 +1,5 @@
 # Cimulate
-A C++ library to simulate key, mouse, and joystick actions. (Will come with Python lib as well)
+A C++ library to simulate key, mouse, and joystick actions for GNUnix. 
 
 States:
   - Not implemented: Not added and not in progress.
@@ -12,16 +12,6 @@ States:
 Linux:
   - Mouse: Working
   - Keyboard: Working
-  - Joystick: Not implemented
-
-Windows:
-  - Mouse: In developement (needs testing to move to "Working")
-  - Keyboard: In developement
-  - Joystick: Not implemented
-
-X OSes:
-  - Mouse: Not implemented
-  - Keyboard: Not implemented
   - Joystick: Not implemented
 
 Android:
