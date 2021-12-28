@@ -1,5 +1,6 @@
 #include <string>
-
+#include <vector>
+   
 #ifdef __linux__ // GNUnix
 
 #include <X11/Xlib.h>
@@ -9,7 +10,7 @@ class Keyboard{
 private:
    Display *d;
 public:
-   int _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P, _Q, _R, _S, _T, _U, _V, _W, _X, _Y, _Z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _F1, _F2, _F3, _F4, _F5, _F6, _F7, _F8, _F9, _F10, _F11, _F12, _F13, _F14, _F15, _F16, _F17, _F18, _F19, _F20, _F21, _F22, _F23, _F24, _TILDE, _HYPHEN, _EQUAL, _OPEN_BRACKET, _CLOSE_BRACKET, _BACKSLASH, _SEMI_COLON, _APOSTROPHE, _COMMA, _PERIOD, _FOWARDSLASH, _UP, _DOWN, _LEFT, _RIGHT, _INSERT, _DELETE, _HOME, _END, _PAGE_UP, _PAGE_DOWN, _PRINT_SCREEN, _SCROLL_LOCK, _BREAK, _ESCAPE, _SPACE_BAR, _CAPS_LOCK, _NUM_LOCK, _NUM_DIVIDE, _NUM_MULTIPLY, _NUM_SUBTRACT, _NUM_ADD, _NUM_ENTER, _NUM_DECIMAL, _NUM_0, _NUM_1, _NUM_2, _NUM_3, _NUM_4, _NUM_5, _NUM_6, _NUM_7, _NUM_8, _NUM_9;
+   int _A, _B, _C, _D, _E, _F, _G, _H, _I, _J, _K, _L, _M, _N, _O, _P, _Q, _R, _S, _T, _U, _V, _W, _X, _Y, _Z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _F1, _F2, _F3, _F4, _F5, _F6, _F7, _F8, _F9, _F10, _F11, _F12, _F13, _F14, _F15, _F16, _F17, _F18, _F19, _F20, _F21, _F22, _F23, _F24, _TILDE, _HYPHEN, _EQUAL, _OPEN_BRACKET, _CLOSE_BRACKET, _BACKSLASH, _SEMI_COLON, _APOSTROPHE, _COMMA, _PERIOD, _FOWARDSLASH, _UP, _DOWN, _LEFT, _RIGHT, _INSERT, _DELETE, _HOME, _END, _PAGE_UP, _PAGE_DOWN, _PRINT_SCREEN, _SCROLL_LOCK, _BREAK, _ESCAPE, _BACKSPACE, _ENTER, _SHIFT_LEFT, _SHIFT_RIGHT, _CONTROL_LEFT, _CONTROL_RIGHT, _SPACE_BAR, _CAPS_LOCK, _NUM_LOCK, _NUM_DIVIDE, _NUM_MULTIPLY, _NUM_SUBTRACT, _NUM_ADD, _NUM_ENTER, _NUM_DECIMAL, _NUM_0, _NUM_1, _NUM_2, _NUM_3, _NUM_4, _NUM_5, _NUM_6, _NUM_7, _NUM_8, _NUM_9;
    std::string lang;
 
    Keyboard(){
@@ -102,7 +103,12 @@ public:
          _PRINT_SCREEN = XKeysymToKeycode(d, 0xfd1d);
          _SCROLL_LOCK = XKeysymToKeycode(d, 0xff14);
          _BREAK = XKeysymToKeycode(d, 0xff6b);
-         _ESCAPE = XKeysymToKeycode(d, 0xff1b);
+         _BACKSPACE = XKeysymToKeycode(d, 0xff08);
+         _ENTER = XKeysymToKeycode(d, 0xff0d);
+         _SHIFT_LEFT = XKeysymToKeycode(d, 0xffe1);
+         _SHIFT_RIGHT = XKeysymToKeycode(d, 0xffe2);
+         _CONTROL_LEFT = XKeysymToKeycode(d, 0xffe3);
+         _CONTROL_RIGHT = XKeysymToKeycode(d, 0xffe4);
          _SPACE_BAR = XKeysymToKeycode(d, 0x0020);
          _CAPS_LOCK = XKeysymToKeycode(d, 0xffe5);
          _NUM_LOCK = XKeysymToKeycode(d, 0xff7f);
@@ -133,21 +139,35 @@ public:
       XTestFakeKeyEvent(d, key, down, 0);
       XFlush(d);
    }
+
+   void toggle(std::vector<int> &keysUp, std::vector<int> &keysDown){
+      if (keysUp.size() != 0){
+         for (int x = 0; x < keysUp.size(); x++){
+            XTestFakeKeyEvent(d, keysUp.at(x), 0, 0);
+         }
+      }
+      if (keysDown.size() != 0){
+         for (int x = 0; x < keysDown.size(); x++){
+            XTestFakeKeyEvent(d, keysDown.at(x), 1, 0);
+         }
+      }
+      XFlush(d);
+   }
 };
 
 class Mouse{
 private:
    Display *d;
 public:
-   static const int _LEFT = 1;
-   static const int _MIDDLE = 2;
-   static const int _RIGHT = 3;
-   static const int _SCROLL_UP = 4;
-   static const int _SCROLL_DOWN = 5;
-   static const int _SCROLL_LEFT = 6;
-   static const int _SCROLL_RIGHT = 7;
-   static const int _MISC_A = 8;
-   static const int _MISC_B = 9;
+   int _LEFT = 1;
+   int _MIDDLE = 2;
+   int _RIGHT = 3;
+   int _SCROLL_UP = 4;
+   int _SCROLL_DOWN = 5;
+   int _SCROLL_LEFT = 6;
+   int _SCROLL_RIGHT = 7;
+   int _MISC_A = 8;
+   int _MISC_B = 9;
    Mouse(){
    }
 
@@ -160,6 +180,18 @@ public:
       XFlush(d);
    }
    
+   void toggle(std::vector<int> &buttonsUp, std::vector<int> &buttonsDown){
+      for (int x = 0; x < buttonsUp.size(); x++){
+         XTestFakeButtonEvent(d, buttonsUp.at(x), 0, 0);
+      }
+      for (int x = 0; x < buttonsDown.size(); x++){
+         XTestFakeButtonEvent(d, buttonsDown.at(x), 1, 0);
+      }
+      if ((buttonsUp.size() + buttonsDown.size()) > 0){
+         XFlush(d);
+      }
+   }
+
    void setPos(int x, int y){
       XWarpPointer(d, None, XDefaultRootWindow(d), 0, 0, 0, 0, x, y);
       XFlush(d);
