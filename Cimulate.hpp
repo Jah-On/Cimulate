@@ -7,8 +7,6 @@
 #include <string>
 #include <vector>
 
-#include <chrono>
-
 #ifdef __linux__ // GNUnix
 
 #include <X11/X.h>
