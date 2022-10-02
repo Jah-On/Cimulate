@@ -1,5 +1,5 @@
 # Cimulate
-A C++ library to simulate key, mouse, and joystick actions for GNUnix. 
+A C++ library to simulate key, mouse, and joystick actions for GNUnix. It also provides screenshot grabbing and mouse position functions.
 
 States:
   - Not implemented: Not added and not in progress.
@@ -10,8 +10,9 @@ States:
 
 
 Linux:
-  - Mouse: Working
-  - Keyboard: Working
+  - Mouse: Working (X11)
+  - Keyboard: Working (X11)
+  - Screen: Working (X11)
   - Joystick: Not implemented
 
 Android:
