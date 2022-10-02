@@ -1,10 +1,60 @@
+#include <X11/extensions/XI.h>
+#include <algorithm>
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
 #include <string>
 #include <vector>
-   
+
+#include <chrono>
+
 #ifdef __linux__ // GNUnix
 
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
+
+namespace cim {
+struct Pos {
+   int x;
+   int y;
+};
+
+struct RGB_Image {
+   std::vector<char> img_data;
+   int xres;
+   int yres;
+};
+
+class Screen {
+private:
+   Display * d;
+public:
+   Screen(){
+   }
+   
+   Screen(Display * dsp){
+      d = dsp;
+   }
+
+   void setDisplay(Display *dsp){
+      d = dsp;
+   }
+
+   void grab_rgb(int screen, RGB_Image *rtn){
+      rtn->xres = XWidthOfScreen(XScreenOfDisplay(d, screen));
+      rtn->yres = XHeightOfScreen(XScreenOfDisplay(d, screen));
+      rtn->img_data.resize(rtn->xres * rtn->yres * 3);
+      XImage * x = XGetImage(d, XDefaultRootWindow(d), 0, 0, rtn->xres, rtn->yres, AllPlanes, ZPixmap);
+      int end = rtn->xres * rtn->yres;
+      for (int i = 0; i < end; i++){
+         std::memcpy((&rtn->img_data.at(i * 3)), x->data + (i * 4), 3);
+      }
+      std::free(x);
+      XFlush(d);
+   }
+};
 
 class Keyboard{
 private:
@@ -155,24 +205,34 @@ public:
    }
 };
 
-class Mouse{
+class Mouse {
 private:
-   Display *d;
+   Display * d;
 public:
-   int _LEFT = 1;
-   int _MIDDLE = 2;
-   int _RIGHT = 3;
-   int _SCROLL_UP = 4;
-   int _SCROLL_DOWN = 5;
-   int _SCROLL_LEFT = 6;
-   int _SCROLL_RIGHT = 7;
-   int _MISC_A = 8;
-   int _MISC_B = 9;
+   const int _LEFT = 1;
+   const int _MIDDLE = 2;
+   const int _RIGHT = 3;
+   const int _SCROLL_UP = 4;
+   const int _SCROLL_DOWN = 5;
+   const int _SCROLL_LEFT = 6;
+   const int _SCROLL_RIGHT = 7;
+   const int _MISC_A = 8;
+   const int _MISC_B = 9;
    Mouse(){
    }
 
    void setDisplay(Display *dsp){
       d = dsp;
+   }
+
+   Pos getPos(){
+      Pos rtn = Pos{};
+      Window child;
+      int a, b;
+      unsigned int c;
+      XQueryPointer(d, XRootWindow(d, 0), &DefaultRootWindow(d), &child, &rtn.x, &rtn.y, &a, &b, &c);
+      XFlush(d);
+      return rtn;
    }
 
    void toggle(int button, bool down){
@@ -204,12 +264,14 @@ private:
 public:
    Mouse mouse;
    Keyboard keyboard;
+   Screen screen;
 
    Cimulate(){
       d = XOpenDisplay(0);
       mouse.setDisplay(d);
       keyboard.setDisplay(d);
       keyboard.setMap("US");
+      screen.setDisplay(d);
    }
 
    Cimulate(std::string lang){
@@ -217,8 +279,10 @@ public:
       mouse.setDisplay(d);
       keyboard.setDisplay(d);
       keyboard.setMap(lang);
+      screen.setDisplay(d);
    }
 };
+}
 
 #endif
 
